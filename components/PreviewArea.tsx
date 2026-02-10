@@ -44,13 +44,15 @@ const PreviewArea: React.FC<PreviewAreaProps> = ({ pages, config, title }) => {
                   <div key={gIdx} className="flex" style={{ gap: `${config.gridSpacing}px` }}>
                     {group.map((item) => (
                       <div key={item.id} className="flex flex-col items-center">
-                        {/* 拼音：保持在格子正上方 */}
+                        {/* 拼音：取消 italic 避免某些字体下 'n' 被遮挡，增加 overflow-visible */}
                         <div 
-                          className="italic text-slate-900 font-bold text-center leading-none" 
+                          className="text-slate-900 font-bold text-center leading-none whitespace-nowrap overflow-visible" 
                           style={{ 
+                            fontFamily: 'Inter, sans-serif',
                             fontSize: `${config.pinyinSize}px`, 
                             height: '1.2em', 
                             marginBottom: '6px',
+                            minWidth: `${config.gridSize}px`,
                             opacity: config.showPinyin ? 1 : 0
                           }}
                         >
@@ -59,7 +61,7 @@ const PreviewArea: React.FC<PreviewAreaProps> = ({ pages, config, title }) => {
                         
                         {/* 格子单元：必须是绝对的正方形 */}
                         <div 
-                          className="relative box-border bg-white overflow-hidden" 
+                          className="relative box-border bg-white overflow-visible" 
                           style={{ 
                             width: `${config.gridSize}px`, 
                             height: `${config.gridSize}px`,
@@ -67,7 +69,7 @@ const PreviewArea: React.FC<PreviewAreaProps> = ({ pages, config, title }) => {
                           }}
                         >
                           {/* 内部网格线：使用绝对定位确保中心点固定 */}
-                          <div className="absolute inset-0 pointer-events-none opacity-50">
+                          <div className="absolute inset-0 pointer-events-none opacity-50 overflow-hidden">
                             {config.gridType !== GridType.EMPTY && (
                               <>
                                 {/* 水平居中线 */}
@@ -106,10 +108,10 @@ const PreviewArea: React.FC<PreviewAreaProps> = ({ pages, config, title }) => {
                             )}
                           </div>
 
-                          {/* 汉字：关键对齐优化 */}
+                          {/* 汉字：严格绝对居中对齐 */}
                           {item.showChar && (
                             <div 
-                              className="copybook-font absolute z-10 select-none text-center flex items-center justify-center"
+                              className="copybook-font absolute z-10 select-none text-center flex items-center justify-center overflow-visible"
                               style={{ 
                                 top: '50%',
                                 left: '50%',
