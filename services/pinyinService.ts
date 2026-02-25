@@ -6,16 +6,15 @@ export const getPinyinArray = async (text: string): Promise<string[]> => {
   }
   const { pinyin } = (window as any).pinyinPro;
   
-  // 逐字生成拼音是解决 Pinyin 库映射或截断问题的最稳妥方案
-  // 将文本转为数组，确保每个汉字独立获取完整的带音调拼音
-  return Array.from(text).map(char => {
-    const result = pinyin(char, { 
-      toneType: 'symbol', 
-      v: true 
-    });
-    // pinyin-pro 逐字模式下返回的是字符串，确保取到的是该字的完整读音
-    return result.trim();
+  // 直接传入整个文本，pinyin-pro 会根据上下文处理多音字
+  // type: 'array' 确保返回一个与输入字符一一对应的拼音数组
+  const result = pinyin(text, { 
+    toneType: 'symbol', 
+    type: 'array',
+    v: true 
   });
+  
+  return result;
 };
 
 const loadPinyinPro = () => {
